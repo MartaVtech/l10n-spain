@@ -25,12 +25,19 @@ class ResPartner(models.Model):
         for arg in args:
             if isinstance(arg, (list, tuple)):
                 if arg[0] == 'name' or arg[0] == 'display_name':
+                    if arg[1] not in expression.NEGATIVE_TERM_OPERATORS:
+                        add_domain = ['|', ('comercial', arg[1], arg[2])]
+                    else:
+                        add_domain = ['&',
+                                      '|',
+                                      ('comercial', arg[1], arg[2]),
+                                      ('comercial', '=', False),
+                                      '|',
+                                      (arg[0], arg[1], arg[2]),
+                                      (arg[0], '=', False)]
                     index = args.index(arg)
-                    args = (
-                        args[:index] + ['|', ('comercial', arg[1], arg[2])] +
-                        args[index:]
-                    )
-                    break
+                    args = (args[:index] + add_domain + args[index:])
+
         return super(ResPartner, self).search(
             args, offset=offset, limit=limit, order=order, count=count,
         )
