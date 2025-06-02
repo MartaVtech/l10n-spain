@@ -33,7 +33,6 @@ class ResPartner(models.Model):
                                       ('comercial', arg[1], arg[2]),
                                       ('comercial', '=', False),
                                       '|',
-                                      (arg[0], arg[1], arg[2]),
                                       (arg[0], '=', False)]
                     index = args.index(arg)
                     args = (args[:index] + add_domain + args[index:])
